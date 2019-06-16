@@ -15,6 +15,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import edu.handong.analysis.datamodel.Student;
 import edu.handong.finalproject.datamodel.ExelFile;
 import edu.handong.finalproject.utils.ExcelReader;
 import edu.handong.finalproject.utils.ExcelWriter;
@@ -37,7 +38,8 @@ public class MergeExelFile {
 				return;
 			}
 			readZipFile(input);
-			MergeFiles(Exels);
+			Map<String,ExelFile> sortedExels = new TreeMap<String,ExelFile>(Exels); 
+			MergeFiles(sortedExels,output);
 		}	
 	}
 	
@@ -59,7 +61,7 @@ public class MergeExelFile {
 				Enumeration<? extends ZipArchiveEntry> entries = zipFile.getEntries();
 				
 				//Get Student Id from file name
-				studentId = tempFile.getName().split(".zip")[0];
+				studentId = tempFile.getName().split("\\.")[0];
 				file.getStudentId(studentId);
 				
 				while(entries.hasMoreElements()) {
@@ -73,7 +75,9 @@ public class MergeExelFile {
 					}else if(num==2){
 						file.setData2(reader.getData(stream));
 						Exels.put(studentId,file);
+						//System.exit(0);
 					}
+					stream.close();
 				}
 			} catch (IOException e) { 
 				// TODO Auto-generated catch block 
@@ -82,21 +86,20 @@ public class MergeExelFile {
 		}
 	} 
 	
-	void MergeFiles(HashMap<String,ExelFile>Exels) throws IOException{
+	void MergeFiles(Map<String,ExelFile> sortedExels, String output) throws IOException{
 		ExcelWriter write = new ExcelWriter();
-		write.write1();
-		//write.write2();
-		for(String studentId : Exels.keySet()) {
-			ExelFile f = Exels.get(studentId);
-			for(String value:f.getData1()){
-				System.out.println(value);
-			}
-			write.update1(studentId,f.getData1());
-			//write.update2(studentId,f.getData2());
+		write.write1(output);
+		write.write2(output);
+		for(String studentId : sortedExels.keySet()) {
+			ExelFile f = sortedExels.get(studentId);
+			System.out.println(studentId);
+//			for(String value:f. getData1()){
+//				System.out.println(value);
+//			}
+			write.update1(studentId,f.getData1(),output);
+			write.update2(studentId,f.getData2(),output);
 		}
 	}
-	
-	
 	
 	private boolean parseOptions(Options options, String[] args) {
 		CommandLineParser parser = new DefaultParser();
