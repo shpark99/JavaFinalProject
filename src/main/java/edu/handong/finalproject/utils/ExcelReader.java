@@ -10,6 +10,7 @@ import java.util.Iterator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -29,26 +30,23 @@ public class ExcelReader {
 		
 		Iterator<Row> rowIterator = sheet.iterator();
 		
-		int i =1;
 		while(rowIterator.hasNext()) {
 			Row row = rowIterator.next();
-			Iterator<Cell> cellIterator = row.cellIterator();
-			while(cellIterator.hasNext()) {
-				Cell cell = cellIterator.next();
-//				System.out.println(i);
-//				System.out.println(cell.getCellType());
-//				i++;
-				switch(cell.getCellType()) {
-					case STRING: values.add(cell.getStringCellValue());System.out.println(cell.getStringCellValue()); break;
-					case NUMERIC: values.add(Double.toString(cell.getNumericCellValue())); System.out.println(cell.getNumericCellValue());break;
-					case BLANK: values.add(""); System.out.println("d"); break;
-					default: System.out.println(cell.getCellType());  break;
-				}
+			
+			int cells =row.getLastCellNum();
+			for(int i = 0; i<cells;i++) {
+				Cell cell = row.getCell(i,MissingCellPolicy.CREATE_NULL_AS_BLANK);
+					switch(cell.getCellType()) {
+					  case STRING: values.add(cell.getStringCellValue());break;
+					  case NUMERIC: values.add(Double.toString(cell.getNumericCellValue()));break;
+					  case BLANK: values.add("");break;
+					  default: System.out.println(cell.getCellType());break;
+					}
 			}
 		}
 	} catch (IOException e) {
 		System.out.println("error");
-		//e.printStackTrace();
+		e.printStackTrace();
 	}
 	return values;
 }

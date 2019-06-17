@@ -40,8 +40,6 @@ public class MergeExelFile {
 			readZipFile(input);
 			Map<String,ExelFile> sortedExels = new TreeMap<String,ExelFile>(Exels); 
 			MergeFiles(sortedExels,output);
-//			MergeFiles1(sortedExels,output);
-//			MergeFiles2(sortedExels,output);
 		}	
 	}
 	
