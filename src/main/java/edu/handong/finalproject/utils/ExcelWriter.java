@@ -29,7 +29,6 @@ public class ExcelWriter {
 	public void write1(String output) throws IOException {
 		String name[] = output.split("\\.");
 		String nameToSave = name[0] + "1." + name[1];
-		System.out.println(nameToSave);
 		
 		XSSFWorkbook wb = new XSSFWorkbook();
 		XSSFSheet sheet = wb.createSheet("Data1");
@@ -49,7 +48,13 @@ public class ExcelWriter {
 				else if(i==7) cell.setCellValue("제작자(Copyright 소유처)");
 			}
 		
-		FileOutputStream fs = new FileOutputStream(new File(nameToSave));
+		File file = new File(nameToSave);
+		if(!file.exists()) {
+			file.getParentFile().mkdirs();
+			nameToSave = file.getAbsolutePath();
+			}
+		
+		FileOutputStream fs = new FileOutputStream(nameToSave);
 		wb.write(fs);
 		fs.close();
 		//System.exit(0);
@@ -58,8 +63,8 @@ public class ExcelWriter {
 	public void update1(String studentId,ArrayList<String> Exels, String output) throws IOException {
 			
 			String name[] = output.split("\\.");
-			String fileNameToSave = name[0] + "1." + name[1];
-			FileInputStream input = new FileInputStream(new File(fileNameToSave));
+			String nameToSave = name[0] + "1." + name[1];
+			FileInputStream input = new FileInputStream(new File(nameToSave));
 			Workbook wb = WorkbookFactory.create(input);
 			Sheet sheet = wb.getSheetAt(0);
 			
@@ -74,12 +79,13 @@ public class ExcelWriter {
 					else {
 						cell.setCellValue(Exels.get(i));
 						i++;
+						if(i==Exels.size()) break;
 					}
 				}
 				i--;
 			}
 			input.close();
-	        FileOutputStream outputStream = new FileOutputStream(fileNameToSave);
+	        FileOutputStream outputStream = new FileOutputStream(nameToSave);
 	        wb.write(outputStream);
 	        wb.close();
 	        outputStream.close();
@@ -88,7 +94,7 @@ public class ExcelWriter {
 	public void write2(String output) throws IOException {
 		
 		String name[] = output.split("\\.");
-		String fileNameToSave = name[0] + "2." + name[1];
+		String nameToSave = name[0] + "2." + name[1];
 		
 		XSSFWorkbook wb = new XSSFWorkbook();
 		XSSFSheet sheet = wb.createSheet("Data2");
@@ -105,7 +111,7 @@ public class ExcelWriter {
 				else if(i==4) cell.setCellValue("자료가 나온 쪽번호");
 			}
 		
-		FileOutputStream fs = new FileOutputStream(fileNameToSave);
+		FileOutputStream fs = new FileOutputStream(nameToSave);
 		wb.write(fs);
 		fs.close();
 	}
@@ -113,33 +119,32 @@ public class ExcelWriter {
 	public void update2(String studentId,ArrayList<String> Exels,String output) throws IOException {
 		
 		String name[] = output.split("\\.");
-		String fileNameToSave = name[0] + "2." + name[1];
+		String nameToSave = name[0] + "2." + name[1];
 		
-		FileInputStream input = new FileInputStream(new File(fileNameToSave));
+		FileInputStream input = new FileInputStream(new File(nameToSave));
 		Workbook wb = WorkbookFactory.create(input);
 		Sheet sheet = wb.getSheetAt(0);
 		
 		int rowCount = sheet.getLastRowNum();
 		
 		for(int i=9;i<Exels.size();i++) {
-			System.out.println(Exels.size());
-			System.out.println(Exels.get(217));
 			Row row = sheet.createRow(++rowCount);
 			
 			for(int j=0;j<6;j++) {
 				Cell cell = row.createCell(j);
 				if(j==0) cell.setCellValue(studentId);
 				else {
+//					System.out.println(i);
+//					System.out.println(Exels.get(i));
 					cell.setCellValue(Exels.get(i));
 					i++;
-					System.out.println(i);
-					if(i==218) break;
+					if(i==Exels.size()) break;
 				}
 			}
 			i--;
 		}
 		input.close();
-        FileOutputStream outputStream = new FileOutputStream(fileNameToSave);
+        FileOutputStream outputStream = new FileOutputStream(nameToSave);
         wb.write(outputStream);
         wb.close();
         outputStream.close();

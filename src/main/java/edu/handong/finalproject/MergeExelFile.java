@@ -40,6 +40,8 @@ public class MergeExelFile {
 			readZipFile(input);
 			Map<String,ExelFile> sortedExels = new TreeMap<String,ExelFile>(Exels); 
 			MergeFiles(sortedExels,output);
+//			MergeFiles1(sortedExels,output);
+//			MergeFiles2(sortedExels,output);
 		}	
 	}
 	
@@ -75,7 +77,6 @@ public class MergeExelFile {
 					}else if(num==2){
 						file.setData2(reader.getData(stream));
 						Exels.put(studentId,file);
-						//System.exit(0);
 					}
 					stream.close();
 				}
@@ -85,17 +86,13 @@ public class MergeExelFile {
 			} 
 		}
 	} 
-	
+
 	void MergeFiles(Map<String,ExelFile> sortedExels, String output) throws IOException{
 		ExcelWriter write = new ExcelWriter();
 		write.write1(output);
 		write.write2(output);
 		for(String studentId : sortedExels.keySet()) {
 			ExelFile f = sortedExels.get(studentId);
-			System.out.println(studentId);
-//			for(String value:f. getData1()){
-//				System.out.println(value);
-//			}
 			write.update1(studentId,f.getData1(),output);
 			write.update2(studentId,f.getData2(),output);
 		}
