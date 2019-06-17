@@ -16,6 +16,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 import edu.handong.analysis.datamodel.Student;
+import edu.handong.csee.java.examples.thread.lab.SumMultipleThreads;
 import edu.handong.finalproject.datamodel.ExelFile;
 import edu.handong.finalproject.utils.ExcelReader;
 import edu.handong.finalproject.utils.ExcelWriter;
@@ -45,13 +46,13 @@ public class MergeExelFile {
 	
 	
 	public void readZipFile(String input) throws IOException {
+		
 		File dirFile = new File(input);
 		File [] fileList = dirFile.listFiles();
 		String studentId;
 		
 		for(File tempFile: fileList) {
 			String tempPath = tempFile.getAbsolutePath();
-			System.out.println(tempPath);
 			int num = 1;
 			ExelFile file = new ExelFile();
 			
@@ -78,6 +79,7 @@ public class MergeExelFile {
 					}
 					stream.close();
 				}
+				zipFile.close();
 			} catch (IOException e) { 
 				// TODO Auto-generated catch block 
 				e.printStackTrace(); 

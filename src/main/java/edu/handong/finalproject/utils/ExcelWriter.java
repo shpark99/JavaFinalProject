@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -59,37 +60,36 @@ public class ExcelWriter {
 		fs.close();
 		//System.exit(0);
 	}
-	
-	public void update1(String studentId,ArrayList<String> Exels, String output) throws IOException {
-			
-			String name[] = output.split("\\.");
-			String nameToSave = name[0] + "1." + name[1];
-			FileInputStream input = new FileInputStream(new File(nameToSave));
-			Workbook wb = WorkbookFactory.create(input);
-			Sheet sheet = wb.getSheetAt(0);
-			
-			int rowCount = sheet.getLastRowNum();
-			
-			for(int i=7;i<Exels.size();i++) {
-				Row row = sheet.createRow(++rowCount);
-				
-				for(int j=0;j<8;j++) {
-					Cell cell = row.createCell(j);
-					if(j==0) cell.setCellValue(studentId);
-					else {
-						cell.setCellValue(Exels.get(i));
-						i++;
-						if(i==Exels.size()) break;
-					}
+
+	public void update1(String studentId,ArrayList<StringLinkedList> datas, String output) throws IOException {
+		
+		String name[] = output.split("\\.");
+		String nameToSave = name[0] + "1." + name[1];
+		FileInputStream input = new FileInputStream(new File(nameToSave));
+		Workbook wb = WorkbookFactory.create(input);
+		Sheet sheet = wb.getSheetAt(0);
+		
+		int rowCount = sheet.getLastRowNum();
+		
+		for(int i=2;i< datas.size();i++) {
+			datas.get(i).resetIteration();
+			Row row = sheet.createRow(++rowCount);
+			for(int j=0;j<datas.get(i).length()+1;j++) {
+				Cell cell = row.createCell(j);
+				if(j==0) cell.setCellValue(studentId);
+				else {
+					//System.out.println(datas.get(i).getDataAtCurrent());
+					cell.setCellValue(datas.get(i).getDataAtCurrent());
+					datas.get(i).goToNext();
 				}
-				i--;
 			}
-			input.close();
-	        FileOutputStream outputStream = new FileOutputStream(nameToSave);
-	        wb.write(outputStream);
-	        wb.close();
-	        outputStream.close();
 		}
+		input.close();
+        FileOutputStream outputStream = new FileOutputStream(nameToSave);
+        wb.write(outputStream);
+        wb.close();
+        outputStream.close();
+	}
 	
 	public void write2(String output) throws IOException {
 		
@@ -116,7 +116,7 @@ public class ExcelWriter {
 		fs.close();
 	}
 	
-	public void update2(String studentId,ArrayList<String> Exels,String output) throws IOException {
+	public void update2(String studentId,ArrayList<StringLinkedList> datas,String output) throws IOException {
 		
 		String name[] = output.split("\\.");
 		String nameToSave = name[0] + "2." + name[1];
@@ -127,21 +127,18 @@ public class ExcelWriter {
 		
 		int rowCount = sheet.getLastRowNum();
 		
-		for(int i=9;i<Exels.size();i++) {
+		for(int i=2;i< datas.size();i++) {
+			datas.get(i).resetIteration();
 			Row row = sheet.createRow(++rowCount);
-			
-			for(int j=0;j<6;j++) {
+			for(int j=0;j<datas.get(i).length()+1;j++) {
 				Cell cell = row.createCell(j);
 				if(j==0) cell.setCellValue(studentId);
 				else {
-//					System.out.println(i);
-//					System.out.println(Exels.get(i));
-					cell.setCellValue(Exels.get(i));
-					i++;
-					if(i==Exels.size()) break;
+					//System.out.println(datas.get(i).getDataAtCurrent());
+					cell.setCellValue(datas.get(i).getDataAtCurrent());
+					datas.get(i).goToNext();
 				}
 			}
-			i--;
 		}
 		input.close();
         FileOutputStream outputStream = new FileOutputStream(nameToSave);
