@@ -40,15 +40,16 @@ public class ExcelWriter {
 		
 		File file = new File(nameToSave);
 		
-		if(!file.exists()) {
-			file.getParentFile().mkdirs();
-			nameToSave = file.getAbsolutePath();
+		if(file.getParentFile()!=null) {
+			if(!file.exists()) {
+				file.getParentFile().mkdirs();
+				nameToSave = file.getAbsolutePath();
+			}
 		}
 		
 		FileOutputStream fs = new FileOutputStream(nameToSave);
 		wb.write(fs);
 		fs.close();
-		//System.exit(0);
 	}
 
 	public void update1(String studentId,ArrayList<StringLinkedList> datas, String output) throws IOException {
