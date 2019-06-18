@@ -24,7 +24,6 @@ public class MergeExelFile {
 	private String input;
 	private String output;
 	private boolean help;
-	private String tempPath;
 	private HashMap<String,ExelFile> Exels = new HashMap<String,ExelFile>();
 
 	public void run(String[] args) throws IOException, InterruptedException {
@@ -53,7 +52,7 @@ public class MergeExelFile {
  * @param output
  * @throws IOException
  */
-	void MergeFiles(Map<String,ExelFile> sortedExels, String output) throws IOException{
+	public void MergeFiles(Map<String,ExelFile> sortedExels, String output) throws IOException{
 		ExcelWriter write = new ExcelWriter();
 		write.write1(output);
 		write.write2(output);
@@ -120,6 +119,10 @@ public class MergeExelFile {
 		return options;
 	}
 	
+/**
+ * This method is for print out help message to user
+ * @param options
+ */
 	private void printHelp(Options options) {
 		// automatically generate the help statement
 		HelpFormatter formatter = new HelpFormatter();
