@@ -30,7 +30,7 @@ public class ExcelReader {
 					Cell cell = row.getCell(i,MissingCellPolicy.CREATE_NULL_AS_BLANK);
 						switch(cell.getCellType()) {
 						  case STRING: values.insertNodeAfterCurrent(cell.getStringCellValue());break;
-						  case NUMERIC:values.insertNodeAfterCurrent(Integer.toString((int)cell.getNumericCellValue()));break;
+						  case NUMERIC:values.insertNodeAfterCurrent(Double.toString(cell.getNumericCellValue()));break;
 						  case BLANK: values.insertNodeAfterCurrent("");break;
 						  default: System.out.println(cell.getCellType());break;
 						}
