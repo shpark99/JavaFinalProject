@@ -15,21 +15,19 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
-import edu.handong.analysis.datamodel.Student;
-import edu.handong.csee.java.examples.thread.lab.SumMultipleThreads;
 import edu.handong.finalproject.datamodel.ExelFile;
-import edu.handong.finalproject.utils.ExcelReader;
 import edu.handong.finalproject.utils.ExcelWriter;
-import edu.handong.finalproject.utils.Utils;
+import edu.handong.finalproject.utils.ReadZipFileThreads;
 
 public class MergeExelFile {
 	
 	private String input;
 	private String output;
 	private boolean help;
+	private String tempPath;
 	private HashMap<String,ExelFile> Exels = new HashMap<String,ExelFile>();
 
-	public void run(String[] args) throws IOException {
+	public void run(String[] args) throws IOException, InterruptedException {
 		
 		Options options = createOptions();
 		
@@ -44,49 +42,17 @@ public class MergeExelFile {
 		}	
 	}
 	
+	public void readZipFile(String input) throws InterruptedException {
+		ReadZipFileThreads read = new ReadZipFileThreads();
+		Exels = read.readZipFileWithThread(input);
+	}
 	
-	public void readZipFile(String input) throws IOException {
-		
-		File dirFile = new File(input);
-		File [] fileList = dirFile.listFiles();
-		String studentId;
-		
-		for(File tempFile: fileList) {
-			String tempPath = tempFile.getAbsolutePath();
-			int num = 1;
-			ExelFile file = new ExelFile();
-			
-			ZipFile zipFile;
-			try { 
-				zipFile = new ZipFile(tempPath);
-				Enumeration<? extends ZipArchiveEntry> entries = zipFile.getEntries();
-				
-				//Get Student Id from file name
-				studentId = tempFile.getName().split("\\.")[0];
-				file.getStudentId(studentId);
-				
-				while(entries.hasMoreElements()) {
-					ZipArchiveEntry entry = entries.nextElement();
-					InputStream stream = zipFile.getInputStream(entry);
-					
-					ExcelReader reader = new ExcelReader();
-					if(num==1) {
-						file.setData1(reader.getData(stream));
-						num++;
-					}else if(num==2){
-						file.setData2(reader.getData(stream));
-						Exels.put(studentId,file);
-					}
-					stream.close();
-				}
-				zipFile.close();
-			} catch (IOException e) { 
-				// TODO Auto-generated catch block 
-				e.printStackTrace(); 
-			} 
-		}
-	} 
-
+/**
+ * This method is to merge all the files in one excel or csv file
+ * @param sortedExels
+ * @param output
+ * @throws IOException
+ */
 	void MergeFiles(Map<String,ExelFile> sortedExels, String output) throws IOException{
 		ExcelWriter write = new ExcelWriter();
 		write.write1(output);
@@ -98,6 +64,12 @@ public class MergeExelFile {
 		}
 	}
 	
+/**
+ * This method is to parse options to use.
+ * @param options
+ * @param args
+ * @return
+ */
 	private boolean parseOptions(Options options, String[] args) {
 		CommandLineParser parser = new DefaultParser();
 
@@ -115,8 +87,11 @@ public class MergeExelFile {
 		}
 		return true;
 	}
-
-	// Definition Stage
+	
+/**
+ * This method is for definition stage - Add options by using OptionBuilder.
+ * @return
+ */
 	private Options createOptions() {
 		Options options = new Options();
 

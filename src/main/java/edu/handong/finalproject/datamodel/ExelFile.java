@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import edu.handong.finalproject.utils.StringLinkedList;
 
 public class ExelFile {
-	private String studentID;
+	private String studentId;
 	private ArrayList<StringLinkedList>Excel1;
 	private ArrayList<StringLinkedList>Excel2;
 	
@@ -15,8 +15,12 @@ public class ExelFile {
 	public void setData2(ArrayList<StringLinkedList> value) {
 		Excel2 = value;
 	}
-	public void getStudentId(String studentId) {
-		this.studentID = studentId;
+	public void setStudentId(String studentId) {
+		this.studentId = studentId;
+	}
+	
+	public String getStudentId() {
+		return studentId;
 	}
 	
 	public ArrayList<StringLinkedList> getData1() {
